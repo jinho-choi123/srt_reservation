@@ -17,8 +17,9 @@ from srt_reservation.validation import station_list
 chromedriver_option = Options()
 chromedriver_option.add_argument('--headless')
 
-
-chromedriver_path = '/opt/homebrew/bin/chromedriver'
+chromedriver_path = ChromeDriverManager().install()
+if "THIRD_PARTY_NOTICES.chromedriver" in chromedriver_path:
+    chromedriver_path = chromedriver_path.replace("THIRD_PARTY_NOTICES.chromedriver", "chromedriver")
 
 class SRT:
     def __init__(self, dpt_stn, arr_stn, dpt_dt, dpt_tm, num_trains_to_check=2, want_reserve=False):
@@ -67,7 +68,7 @@ class SRT:
         try:
             self.driver = webdriver.Chrome(chromedriver_path, options=chromedriver_option)
         except WebDriverException:
-            self.driver = webdriver.Chrome(ChromeDriverManager().install())
+            print(f"Error occurred while installing chromedriver. Please check webdriver_manager...")
 
     def login(self):
         self.driver.get('https://etk.srail.co.kr/cmc/01/selectLoginForm.do')
